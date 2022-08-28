@@ -46,10 +46,11 @@ zsh_install(){
 }
 
 zsh_config(){
+	ZSH=$(zsh_path)
 	ZSH_THEME=$(zsh_theme_path)
 	THEME=$ZSH_THEME/jl.zsh-theme
 	ZSHRC=~/.zshrc
-	ln -sf $ZSH_THEME ~/.oh-my-zsh/themes/jl.zsh-theme
+	ln -sf $ZSH_THEME $ZSH/themes/jl.zsh-theme
 	echo 'ZSH=~/.oh-my-zsh' >$ZSHRC
 	echo 'export ZSH="$ZSH"' >>$ZSHRC
 	echo 'ZSH_THEME="jl"' >>$ZSHRC
