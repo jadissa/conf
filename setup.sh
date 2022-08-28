@@ -86,7 +86,8 @@ help(){
 	echo 'Usage: setup.sh [<options>]'
 	echo
 	echo 'Named options: '
-	echo '	--bruteforce		Forcefully install'
+	echo '	--install		Install requirements'
+	echo '	--configure		Configure installed software'
 	echo '	--verbose		Display output'
 	echo '	--help			Show this help doc'
 }
