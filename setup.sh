@@ -58,16 +58,16 @@ vim_path(){
 
 vim_config(){
 	vim_path
-	echo 'set nocompatible' >%VIM
-	echo 'set showmatch' >>%VIM
-	echo 'set nu' >>%VIM
-	echo 'set mouse=a' >>%VIM
+	echo 'set nocompatible' >$VIM
+	echo 'set showmatch' >>$VIM
+	echo 'set nu' >>$VIM
+	echo 'set mouse=a' >>$VIM
 	echo 'syntax on' >>%VIM
-	echo 'filetype on' >>%VIM
-	echo 'filetype indent on' >>%VIM
-	echo 'filetype plugin on' >>%VIM
-	echo 'set backspace=indent,eol,start' >>%VIM
-	source %VIM > /dev/null 2>&1 &
+	echo 'filetype on' >>$VIM
+	echo 'filetype indent on' >>$VIM
+	echo 'filetype plugin on' >>$VIM
+	echo 'set backspace=indent,eol,start' >>$VIM
+	source $VIM > /dev/null 2>&1 &
 	echo 0
 }
 
