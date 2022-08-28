@@ -76,8 +76,6 @@ vim_config(){
 	echo 'filetype indent on' >>$VIMRC
 	echo 'filetype plugin on' >>$VIMRC
 	echo 'set backspace=indent,eol,start' >>$VIMRC
-	#echo 'packadd! dracula' >>$VIMRC
-	#echo 'colorscheme dracula' >>$VIMRC
 	echo 'syntax enable' >>$VIMRC
 	source $VIMRC > /dev/null 2>&1 &
 	echo 0
