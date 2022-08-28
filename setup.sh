@@ -36,38 +36,35 @@ zsh_install(){
 
 zsh_config(){
 	THEME=/var/www/jadissa/conf/zsh/jl.zsh-theme
+	ZSHRC=~/.zshrc
 	ln -sf $THEME ~/.oh-my-zsh/themes/jl.zsh-theme
-	echo 'ZSH=~/.oh-my-zsh' >~/.zshrc
-	echo 'export ZSH="$ZSH"' >>~/.zshrc
-	echo 'ZSH_THEME="jl"' >>~/.zshrc
-	echo 'DISABLE_AUTO_TITLE="true"' >>~/.zshrc
-	echo 'HIST_STAMPS=yyyy-mm-dd' >>~/.zshrc
-	echo 'plugins=(git)' >>~/.zshrc
-	echo 'export PATH="/usr/local/opt/php@8.0/bin:$PATH"' >> ~/.zshrc
-	echo 'source $ZSH/oh-my-zsh.sh' >>~/.zshrc
+	echo 'ZSH=~/.oh-my-zsh' >$ZSHRC
+	echo 'export ZSH="$ZSH"' >>$ZSHRC
+	echo 'ZSH_THEME="jl"' >>$ZSHRC
+	echo 'DISABLE_AUTO_TITLE="true"' >>$ZSHRC
+	echo 'HIST_STAMPS=yyyy-mm-dd' >>$ZSHRC
+	echo 'plugins=(git)' >>$ZSHRC
+	echo 'export PATH="/usr/local/opt/php@8.0/bin:$PATH"' >>$ZSHRC
+	echo 'source $ZSH/oh-my-zsh.sh' >>$ZSHRC
 	touch ~/.hushlogin > /dev/null 2>&1 &
 	source ~/.hushlogin > /dev/null 2>&1 &
 	echo 0
 }
 
-vim_path(){
-	VIM=~/.vimrc
-}
-
 #vim_install(){}
 
 vim_config(){
-	vim_path
-	echo 'set nocompatible' >$VIM
-	echo 'set showmatch' >>$VIM
-	echo 'set nu' >>$VIM
-	echo 'set mouse=a' >>$VIM
-	echo 'syntax on' >>%VIM
-	echo 'filetype on' >>$VIM
-	echo 'filetype indent on' >>$VIM
-	echo 'filetype plugin on' >>$VIM
-	echo 'set backspace=indent,eol,start' >>$VIM
-	source $VIM > /dev/null 2>&1 &
+	VIMRC=~/.vimrc
+	echo 'set nocompatible' >$VIMRC
+	echo 'set showmatch' >>$VIMRC
+	echo 'set nu' >>$VIMRC
+	echo 'set mouse=a' >>$VIMRC
+	echo 'syntax on' >>%VIMRC
+	echo 'filetype on' >>$VIMRC
+	echo 'filetype indent on' >>$VIMRC
+	echo 'filetype plugin on' >>$VIMRC
+	echo 'set backspace=indent,eol,start' >>$VIMRC
+	source $VIMRC > /dev/null 2>&1 &
 	echo 0
 }
 
