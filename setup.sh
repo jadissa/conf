@@ -50,7 +50,7 @@ zsh_config(){
 	ZSH_THEME=$(zsh_theme_path)
 	THEME=$ZSH_THEME/jl.zsh-theme
 	ZSHRC=~/.zshrc
-	ln -sf $ZSH_THEME $ZSH/themes/jl.zsh-theme
+	ln -sf $THEME $ZSH/themes/jl.zsh-theme
 	echo 'ZSH=~/.oh-my-zsh' >$ZSHRC
 	echo 'export ZSH="$ZSH"' >>$ZSHRC
 	echo 'ZSH_THEME="jl"' >>$ZSHRC
