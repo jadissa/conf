@@ -82,9 +82,12 @@ vim_config(){
 }
 
 ssh_config(){
-	test=`cat /etc/ssh/ssh_config | grep "ServerAliveInterval 300"`
+	if [ ! -f ~/.ssh/config ]; then
+		touch ~/.ssh/config
+	fi
+	test=`cat ~/.ssh/config | grep "ServerAliveInterval 300"`
 	if [ "$test" == "" ]; then
-	    sudo echo "ServerAliveInterval 300" >> /etc/ssh/ssh_config 2>&1 &
+	    echo "ServerAliveInterval 300" >> ~/.ssh/config 2>&1 &
 	fi
 	wait # stop process from interrupting remaining execution
 	# - dumb hack that works
