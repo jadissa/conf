@@ -94,6 +94,17 @@ ssh_config(){
 	echo $?
 }
 
+git_config(){
+	git --version 2>&1 >/dev/null
+	GIT_IS_AVAILABLE=$?
+	if [ $GIT_IS_AVAILABLE -eq 0 ]; then #...
+		git config --global core.pager cat
+		echo 0
+	else 
+		echo 1
+	fi
+}
+
 help(){
 	echo 'Usage: setup.sh [<options>]'
 	echo
@@ -154,6 +165,15 @@ main()(
 			fi 
 			exit 1
 		fi	
+		if [[ $VERBOSE == 'yes' ]]; then
+			echo 'Configuring git..'
+		fi 
+		if (( $(git_config) > 0 )); then
+			if [[ $VERBOSE == 'yes' ]]; then
+				echo 'Failed'
+			fi 
+			exit 1
+		fi	
 	elif [[ "$INSTALL" == "yes" ]]; then
 		if [[ $VERBOSE == 'yes' ]]; then
 			echo 'Installing zsh..'
@@ -190,6 +210,15 @@ main()(
 			if [[ $VERBOSE == 'yes' ]]; then
 				echo 'Failed'
 			fi
+			exit 1
+		fi	
+		if [[ $VERBOSE == 'yes' ]]; then
+			echo 'Configuring git..'
+		fi 
+		if (( $(git_config) > 0 )); then
+			if [[ $VERBOSE == 'yes' ]]; then
+				echo 'Failed'
+			fi 
 			exit 1
 		fi	
 	else
