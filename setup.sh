@@ -4,53 +4,40 @@
 ## Website: https://github.com/jadissa/conf
 ## Clone: git clone https://github.com/jadissa/conf.git
 
+conf_path(){
+	echo /var/www/jadissa/conf
+}
+
 zsh_path(){
 	echo ~/.oh-my-zsh
 }
 
-zsh_theme_path(){
-	echo /var/www/jadissa/conf/.zsh
-}
 zsh_install(){
-	MAX_RETRIES=5
 	ZSH=$(zsh_path)
 	rm -rf $ZSH
 	rm -f ~/.zshrc*
 	if [[ ! -d $ZSH ]]; then
 		sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" > /dev/null 2>&1 &
 	fi
-	wait # stop process from interrupting remaining execution
-	if [[ ! -d $ZSH ]]; then
-		RETRIES=0
-		while RETRIES < MAX_RETRIES; do
-			zsh_install
-			RETRIES=$RETRIES+1
-		done
-	fi
+	wait
 	if [[ ! -d $ZSH ]]; then
 		echo 1
-	fi
-	ZSH_THEME=$(zsh_theme_path)
-	if [[ ! -d $ZSH_THEME ]]; then
-		git clone https://github.com/jadissa/zsh.git $ZSH_THEME > /dev/null 2>&1 &
-		wait # stop process from interrupting remaining execution
-	fi
-	if [[ ! -d $ZSH_THEME ]]; then
-		RETRIES=0
-		while RETRIES < MAX_RETRIES; do
-			zsh_install
-			RETRIES=$RETRIES+1
-		done
+	else
+		ZSH_CONF=$(conf_path)/.zsh
+		if [[ ! -d $ZSH_CONF ]]; then
+			git clone https://github.com/jadissa/zsh.git $ZSH_CONF > /dev/null 2>&1 &
+		fi
+		wait
 	fi
 	echo 0
 }
 
 zsh_config(){
 	ZSH=$(zsh_path)
-	ZSH_THEME=$(zsh_theme_path)
-	THEME=$ZSH_THEME/jl.zsh-theme
+	ZSH_CONF=$(conf_path)/.zsh
+	ZSH_THEME="$ZSH_CONF/jl.zsh-theme"
 	ZSHRC=~/.zshrc
-	ln -sf $THEME $ZSH/themes/jl.zsh-theme
+	ln -sf $ZSH_THEME $ZSH/themes/jl.zsh-theme
 	echo 'ZSH=~/.oh-my-zsh' >$ZSHRC
 	echo 'export ZSH="$ZSH"' >>$ZSHRC
 	echo 'ZSH_THEME="jl"' >>$ZSHRC
@@ -89,8 +76,7 @@ ssh_config(){
 	if [ "$test" == "" ]; then
 	    echo "ServerAliveInterval 300" >> ~/.ssh/config 2>&1 &
 	fi
-	wait # stop process from interrupting remaining execution
-	# - dumb hack that works
+	wait
 	echo $?
 }
 
@@ -127,7 +113,6 @@ main()(
 		esac
 		shift
 	done
-
 	if [[ "$INSTALL" == "yes" && "$CONFIG" == "yes" ]]; then
 		if [[ $VERBOSE == 'yes' ]]; then
 			echo 'Installing zsh..'
