@@ -72,9 +72,9 @@ ssh_config(){
 	if [ ! -f ~/.ssh/config ]; then
 		touch ~/.ssh/config
 	fi
-	test=`cat ~/.ssh/config | grep "ServerAliveInterval 300"`
+	test=`cat ~/.ssh/config | grep 'ServerAliveInterval 300'`
 	if [ "$test" == "" ]; then
-	    echo "ServerAliveInterval 300" >> ~/.ssh/config 2>&1 &
+	    echo 'ServerAliveInterval 300' >> ~/.ssh/config 2>&1 &
 	fi
 	wait
 	echo $?
@@ -88,6 +88,42 @@ git_config(){
 		echo 0
 	else 
 		echo 1
+	fi
+}
+
+process() {
+
+	INSTALLS=(
+		'zsh'
+	)
+	CONFIGS=(
+		'zsh'
+		'vim'
+		'ssh'
+		'git'
+	)
+	if [[ $1 == 'installs' ]]; then
+		for install in ${INSTALLS[@]}; do
+			echo "Installing ${install}...";
+			if (( $("${install}_install") > 0 )) ; then
+				if [[ $VERBOSE == 'yes' ]]; then
+					echo 'Failed'
+					return 1
+				fi
+			fi
+		done
+	elif [[ $1 == 'configs' ]]; then
+		for config in ${CONFIGS[@]}; do
+			if [[ $VERBOSE == 'yes' ]]; then
+				echo "Configuring ${config}...";
+			fi
+			if (( $("${config}_config") > 0 )) ; then
+				if [[ $VERBOSE == 'yes' ]]; then
+					echo 'Failed'
+					return 1
+				fi
+			fi
+		done
 	fi
 }
 
@@ -107,107 +143,18 @@ main()(
 	CONFIG=no
 	while [ $# -gt 0 ]; do
 		case $1 in
-		--verbose) VERBOSE=yes; SOMETHING=no ;;
-		--install) INSTALL=yes;;
-		--configure) CONFIG=yes;;
+		--verbose)		VERBOSE=yes; SOMETHING=no ;;
+		--install)		INSTALL=yes;;
+		--configure)	CONFIG=yes;;
 		esac
 		shift
 	done
 	if [[ "$INSTALL" == "yes" && "$CONFIG" == "yes" ]]; then
-		if [[ $VERBOSE == 'yes' ]]; then
-			echo 'Installing zsh..'
-		fi 
-		if (( $(zsh_install) > 0 )); then
-			if [[ $VERBOSE == 'yes' ]]; then
-				echo 'Failed'
-			fi 
-			exit 1
-		fi
-		if [[ $VERBOSE == 'yes' ]]; then
-			echo 'Configuring zsh..'
-		fi 
-		if (( $(zsh_config) > 0 )); then
-			if [[ $VERBOSE == 'yes' ]]; then
-				echo 'Failed'
-			fi 
-			exit 1
-		fi
-		if [[ $VERBOSE == 'yes' ]]; then
-			echo 'Configuring vim..'
-		fi 
-		if (( $(vim_config) > 0 )); then
-			if [[ $VERBOSE == 'yes' ]]; then
-				echo 'Failed'
-			fi 
-			exit 1
-		fi
-		if [[ $VERBOSE == 'yes' ]]; then
-			echo 'Configuring ssh..'
-		fi 
-		if (( $(ssh_config) > 0 )); then
-			if [[ $VERBOSE == 'yes' ]]; then
-				echo 'Failed'
-			fi 
-			exit 1
-		fi	
-		if [[ $VERBOSE == 'yes' ]]; then
-			echo 'Configuring git..'
-		fi 
-		if (( $(git_config) > 0 )); then
-			if [[ $VERBOSE == 'yes' ]]; then
-				echo 'Failed'
-			fi 
-			exit 1
-		fi	
+		process 'installs';process 'configs'
 	elif [[ "$INSTALL" == "yes" ]]; then
-		if [[ $VERBOSE == 'yes' ]]; then
-			echo 'Installing zsh..'
-		fi 
-		if (( $(zsh_install) > 0 )); then
-			if [[ $VERBOSE == 'yes' ]]; then
-				echo 'Failed'
-			fi 
-			exit 1
-		fi
+		process 'installs'
 	elif [[ "$CONFIG" == "yes" ]]; then
-		if [[ $VERBOSE == 'yes' ]]; then
-			echo 'Configuring zsh..'
-		fi 
-		if (( $(zsh_config) > 0 )); then
-			if [[ $VERBOSE == 'yes' ]]; then
-				echo 'Failed'
-			fi 
-			exit 1
-		fi
-		if [[ $VERBOSE == 'yes' ]]; then
-			echo 'Configuring vim..'
-		fi 
-		if (( $(vim_config) > 0 )); then
-			if [[ $VERBOSE == 'yes' ]]; then
-				echo 'Failed'
-			fi 
-			exit 1
-		fi
-		if [[ $VERBOSE == 'yes' ]]; then
-			echo 'Configuring ssh..'
-		fi 
-		if (( $(ssh_config) > 0 )); then
-			if [[ $VERBOSE == 'yes' ]]; then
-				echo 'Failed'
-			fi
-			exit 1
-		fi	
-		if [[ $VERBOSE == 'yes' ]]; then
-			echo 'Configuring git..'
-		fi 
-		if (( $(git_config) > 0 )); then
-			if [[ $VERBOSE == 'yes' ]]; then
-				echo 'Failed'
-			fi 
-			exit 1
-		fi	
-	else
-		help
+		process 'configs'
 	fi
 )
 
