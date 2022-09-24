@@ -5,7 +5,7 @@
 ## Clone: git clone https://github.com/jadissa/conf.git
 
 conf_path(){
-	echo /var/www/jadissa/conf
+	echo .
 }
 
 zsh_path(){
@@ -37,7 +37,7 @@ zsh_config(){
 	ZSH_CONF=$(conf_path)/.zsh
 	ZSH_THEME="$ZSH_CONF/jl.zsh-theme"
 	ZSHRC=~/.zshrc
-	ln -sf $ZSH_THEME $ZSH/themes/jl.zsh-theme
+	cp $ZSH_THEME $ZSH/themes/jl.zsh-theme
 	echo 'ZSH=~/.oh-my-zsh' >$ZSHRC
 	echo 'export ZSH="$ZSH"' >>$ZSHRC
 	echo 'ZSH_THEME="jl"' >>$ZSHRC
@@ -92,7 +92,6 @@ git_config(){
 }
 
 process() {
-
 	INSTALLS=(
 		'zsh'
 	)
@@ -141,7 +140,7 @@ main()(
 	VERBOSE=no
 	INSTALL=no
 	CONFIG=no
-	while [ $# -gt 0 ]; do
+	while (( $# > 0 )); do
 		case $1 in
 		--verbose)		VERBOSE=yes; SOMETHING=no ;;
 		--install)		INSTALL=yes;;
@@ -155,6 +154,8 @@ main()(
 		process 'installs'
 	elif [[ "$CONFIG" == "yes" ]]; then
 		process 'configs'
+	else
+		help
 	fi
 )
 
