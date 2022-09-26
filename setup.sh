@@ -4,86 +4,79 @@
 ## Website: https://github.com/jadissa/conf
 ## Clone: git clone https://github.com/jadissa/conf.git
 
-conf_path(){
-	echo .
-}
-
 zsh_path(){
 	echo ~/.oh-my-zsh
 }
 
 zsh_install(){
-	ZSH=$(zsh_path)
-	rm -rf $ZSH
-	rm -f ~/.zshrc*
-	if [[ ! -d $ZSH ]]; then
-		sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" > /dev/null 2>&1 &
+	if [[ -x "$(command -v zsh)" ]]; then
+		ZSH=$(zsh_path)
+		rm -rf $ZSH
+		rm -f ~/.zshrc*
 	fi
+	sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" > /dev/null 2>&1 &
 	wait
-	if [[ ! -d $ZSH ]]; then
-		echo 1
-	else
-		ZSH_CONF=$(conf_path)/.zsh
-		if [[ ! -d $ZSH_CONF ]]; then
-			git clone https://github.com/jadissa/zsh.git $ZSH_CONF > /dev/null 2>&1 &
-		fi
-		wait
-	fi
 	echo 0
 }
 
 zsh_config(){
-	ZSH=$(zsh_path)
-	ZSH_CONF=$(conf_path)/.zsh
-	ZSH_THEME="$ZSH_CONF/jl.zsh-theme"
-	ZSHRC=~/.zshrc
-	cp $ZSH_THEME $ZSH/themes/jl.zsh-theme
-	echo 'ZSH=~/.oh-my-zsh' >$ZSHRC
-	echo 'export ZSH="$ZSH"' >>$ZSHRC
-	echo 'ZSH_THEME="jl"' >>$ZSHRC
-	echo 'DISABLE_AUTO_TITLE="true"' >>$ZSHRC
-	echo 'HIST_STAMPS=yyyy-mm-dd' >>$ZSHRC
-	echo 'plugins=(git)' >>$ZSHRC
-	echo 'export PATH="/usr/local/opt/php@8.0/bin:$PATH"' >>$ZSHRC
-	echo 'source $ZSH/oh-my-zsh.sh' >>$ZSHRC
-	touch ~/.hushlogin > /dev/null 2>&1 &
-	source ~/.hushlogin > /dev/null 2>&1 &
-	echo 0
+	if [[ -x "$(command -v zsh)" ]]; then
+		ZSH=$(zsh_path)
+		ZSHRC=~/.zshrc
+		echo 'ZSH=~/.oh-my-zsh' >$ZSHRC
+		echo 'export ZSH="$ZSH"' >>$ZSHRC
+		echo 'ZSH_THEME="candy"' >>$ZSHRC
+		echo 'DISABLE_AUTO_TITLE="true"' >>$ZSHRC
+		echo 'HIST_STAMPS=yyyy-mm-dd' >>$ZSHRC
+		echo 'plugins=(git)' >>$ZSHRC
+		echo 'export PATH="/usr/local/opt/php@8.0/bin:$PATH"' >>$ZSHRC
+		echo 'source $ZSH/oh-my-zsh.sh' >>$ZSHRC
+		touch ~/.hushlogin > /dev/null 2>&1 &
+		source ~/.hushlogin > /dev/null 2>&1 &
+		echo 0
+	else
+		echo 1
+	fi
 }
 
 #vim_install(){}
 
 vim_config(){
-	VIMRC=~/.vimrc
-	echo 'set nocompatible' >$VIMRC
-	echo 'set showmatch' >>$VIMRC
-	echo 'set nu' >>$VIMRC
-	echo 'set mouse=a' >>$VIMRC
-	echo 'filetype on' >>$VIMRC
-	echo 'filetype indent on' >>$VIMRC
-	echo 'filetype plugin on' >>$VIMRC
-	echo 'set backspace=indent,eol,start' >>$VIMRC
-	echo 'syntax enable' >>$VIMRC
-	source $VIMRC > /dev/null 2>&1 &
-	echo 0
+	if [[ -x "$(command -v vim)" ]]; then
+		VIMRC=~/.vimrc
+		echo 'set nocompatible' >$VIMRC
+		echo 'set showmatch' >>$VIMRC
+		echo 'set nu' >>$VIMRC
+		echo 'set mouse=a' >>$VIMRC
+		echo 'filetype on' >>$VIMRC
+		echo 'filetype indent on' >>$VIMRC
+		echo 'filetype plugin on' >>$VIMRC
+		echo 'set backspace=indent,eol,start' >>$VIMRC
+		echo 'syntax enable' >>$VIMRC
+		source $VIMRC > /dev/null 2>&1 &
+		echo 0
+	else
+		echo 1
+	fi
 }
 
 ssh_config(){
-	if [ ! -f ~/.ssh/config ]; then
-		touch ~/.ssh/config
+	if [[ -x "$(command -v ssh)" ]]; then
+		if [ ! -f ~/.ssh/config ]; then
+			touch ~/.ssh/config
+		fi
+		test=`cat ~/.ssh/config | grep 'ServerAliveInterval 300'`
+		if [[ $test == '' ]]; then
+		    echo 'ServerAliveInterval 300' >> ~/.ssh/config 2>&1 &
+		fi
+		echo 0
+	else
+		echo 1
 	fi
-	test=`cat ~/.ssh/config | grep 'ServerAliveInterval 300'`
-	if [ "$test" == "" ]; then
-	    echo 'ServerAliveInterval 300' >> ~/.ssh/config 2>&1 &
-	fi
-	wait
-	echo $?
 }
 
 git_config(){
-	git --version 2>&1 >/dev/null
-	GIT_IS_AVAILABLE=$?
-	if [ $GIT_IS_AVAILABLE -eq 0 ]; then #...
+	if [[ -x "$(command -v git)" ]]; then
 		git config --global core.pager cat
 		echo 0
 	else 
@@ -91,11 +84,25 @@ git_config(){
 	fi
 }
 
+bash_config(){
+	if [[ -x "$(command -v bash)" ]]; then
+		test=$( cat ~/.bash_profile | grep 'alias ll=' )
+		if [[ $test == '' ]]; then
+			echo "alias ll='ls -lGaf'" >> ~/.bash_profile 
+			source ~/.bash_profile > /dev/null 2>&1 &
+		fi
+	else
+		echo 1
+	fi
+	echo 0
+}
+
 process() {
 	INSTALLS=(
 		'zsh'
 	)
 	CONFIGS=(
+		'bash'
 		'zsh'
 		'vim'
 		'ssh'
