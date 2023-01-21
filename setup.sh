@@ -40,11 +40,16 @@ zsh_config(){
 }
 
 composer_install(){
-	if [[ ! -x "$(command -v composer)" ]]; then
-		php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-		php composer-setup.php > /dev/null
-		php -r "unlink('composer-setup.php');"
-		mv composer.phar /usr/local/bin/composer
+	if [[ ! -x "$(command -v php)" ]]; then
+		echo 1
+	else
+		if [[ ! -x "$(command -v composer)" ]]; then
+			php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+			php composer-setup.php > /dev/null 2>&1 &
+			wait
+			php -r "unlink('composer-setup.php');"
+			mv composer.phar /usr/local/bin/composer
+		fi
 	fi
 	echo 0
 }
