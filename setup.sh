@@ -39,6 +39,16 @@ zsh_config(){
 	fi
 }
 
+composer_install(){
+	if [[ ! -x "$(command -v composer)" ]]; then
+		php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+		php composer-setup.php > /dev/null
+		php -r "unlink('composer-setup.php');"
+		mv composer.phar /usr/local/bin/composer
+	fi
+	echo 0
+}
+
 #vim_install(){}
 
 vim_config(){
@@ -100,6 +110,7 @@ bash_config(){
 process() {
 	INSTALLS=(
 		'zsh'
+		'composer'
 	)
 	CONFIGS=(
 		'bash'
