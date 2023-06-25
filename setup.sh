@@ -31,6 +31,7 @@ zsh_config(){
 		echo 'plugins=(git)' >>$ZSHRC
 		echo 'export PATH="/usr/local/opt/php@8.0/bin:$PATH"' >>$ZSHRC
 		echo 'source $ZSH/oh-my-zsh.sh' >>$ZSHRC
+		echo 'source ~/.bash_profile' >>$ZSHRC
 		touch ~/.hushlogin > /dev/null 2>&1 &
 		source ~/.hushlogin > /dev/null 2>&1 &
 		echo 0
@@ -103,7 +104,7 @@ bash_config(){
 	if [[ -x "$(command -v bash)" ]]; then
 		test=$( cat ~/.bash_profile | grep 'alias ll=' )
 		if [[ $test == '' ]]; then
-			echo "alias ll='ls -lGaf'" >> ~/.bash_profile 
+			echo "alias ll='ls -lGafh'" >> ~/.bash_profile 
 			source ~/.bash_profile > /dev/null 2>&1 &
 		fi
 	else
